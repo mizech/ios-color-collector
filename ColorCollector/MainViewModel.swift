@@ -24,10 +24,7 @@ class MainViewModel {
 	private(set) var suggestedColor = Color.blue
 	private(set) var usedColors = [Color]()
 	private(set) var currentSeconds = 0
-	
-	init() {
-		setInitialState()
-	}
+	private(set) var isGameRunning = false
 	
 	func updateColors(with color: Color, at index: Int) {
 		// Guard against invalid indices to prevent out-of-bounds access
@@ -92,6 +89,15 @@ class MainViewModel {
 		}
 	}
 	
+	func startNewGame() {
+		setInitialState()
+		isGameRunning = true
+	}
+	
+	func toggleIsGameRunning() {
+		isGameRunning.toggle()
+	}
+	
 	func setInitialState() {
 		firstRow = Color.gray
 		secRow = Color.gray
@@ -105,6 +111,7 @@ class MainViewModel {
 		}
 		
 		randomSuggestedColor()
+		isGameRunning = false
 		currentSeconds = 0
 	}
 }
