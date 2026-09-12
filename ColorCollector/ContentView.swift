@@ -1,8 +1,12 @@
+import Combine
 import SwiftUI
 
 struct ContentView: View {
-	@Environment(MainViewModel.self) var mainVM
-	@State var isConfirmShown = false
+	@Environment(MainViewModel.self) private var mainVM
+	@State private var isConfirmShown = false
+	@State private var isGameOverShown = false
+	
+	let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 	
 	let columns = [GridItem(.flexible(minimum: 60, maximum: 120)),
 				   GridItem(.flexible(minimum: 60, maximum: 120)),
@@ -11,6 +15,9 @@ struct ContentView: View {
 	var body: some View {
 		NavigationStack {
 			VStack() {
+				Text("\(mainVM.currentSeconds)")
+					.font(.system(size: 64))
+					.fontWeight(.bold)
 				LazyVGrid(columns: columns, spacing: 8) {
 					ForEach(0..<16, id: \.self) { i in
 						RoundedRectangle(cornerRadius: 16)
@@ -20,6 +27,7 @@ struct ContentView: View {
 								if let color = colors.first {
 									mainVM.updateColors(with: color, at: i)
 									mainVM.randomSuggestedColor()
+									isGameOverShown = mainVM.isGameOver()
 								}
 							}
 					}
@@ -44,9 +52,7 @@ struct ContentView: View {
 			}.toolbar {
 				ToolbarItem(placement: .topBarTrailing) {
 					Button {
-						if mainVM.usedColors.count > 0 {
-							isConfirmShown = true
-						}
+						isConfirmShown = true
 					} label: {
 						Image(systemName: "arrow.clockwise.circle")
 					}.confirmationDialog("Restart Game",
@@ -63,6 +69,16 @@ struct ContentView: View {
 						Text("Restart Game: Are you sure?")
 					}
 				}
+			}
+			.alert("Game over!", isPresented: $isGameOverShown) {
+				Button("Okay") {
+					mainVM.setInitialState()
+				}
+			} message: {
+				Text("Finished!")
+			}
+			.onReceive(timer) { _ in
+				mainVM.incrementCurrentSeconds()
 			}
 		}
 	}

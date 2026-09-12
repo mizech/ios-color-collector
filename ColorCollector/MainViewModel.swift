@@ -23,6 +23,7 @@ class MainViewModel {
 	private(set) var colors = [Color]()
 	private(set) var suggestedColor = Color.blue
 	private(set) var usedColors = [Color]()
+	private(set) var currentSeconds = 0
 	
 	init() {
 		setInitialState()
@@ -75,6 +76,16 @@ class MainViewModel {
 		}
 	}
 	
+	func incrementCurrentSeconds() {
+		currentSeconds += 1
+	}
+	
+	func isGameOver() -> Bool {
+		return colors.allSatisfy { color in
+			color != Color.gray
+		}
+	}
+	
 	func randomSuggestedColor() {
 		if let color = feasibleColors.randomElement() {
 			suggestedColor = color
@@ -94,7 +105,7 @@ class MainViewModel {
 		}
 		
 		randomSuggestedColor()
-		randomSuggestedColor()
+		currentSeconds = 0
 	}
 }
 
