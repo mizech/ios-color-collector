@@ -16,7 +16,7 @@ struct ContentView: View {
 		NavigationStack {
 			Group {
 				if mainVM.isGameRunning == false && mainVM.currentSeconds == 0 {
-					ContentUnavailableView("Start a new game", systemImage: "star")
+					ContentUnavailableView("Start a new game", systemImage: "gamecontroller")
 				} else {
 					VStack() {
 						Text("\(mainVM.currentSeconds)")
@@ -85,12 +85,12 @@ struct ContentView: View {
 					}
 				}
 			}
-			.alert("Game over!", isPresented: $isGameOverShown) {
-				Button("Okay") {
+			.alert("Game over", isPresented: $isGameOverShown) {
+				Button("OK") {
 					mainVM.setInitialState()
 				}
 			} message: {
-				Text("Finished!")
+				Text("Congratulations. You have won!")
 			}
 			.onReceive(timer) { _ in
 				if mainVM.isGameRunning == true {
