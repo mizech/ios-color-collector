@@ -3,6 +3,8 @@ import SwiftUI
 
 @Observable
 class MainViewModel {
+	public static let initialSeconds = 125
+	
 	private var firstRow = Color.gray
 	private var secRow = Color.gray
 	private var thirdRow = Color.gray
@@ -23,7 +25,7 @@ class MainViewModel {
 	private(set) var colors = [Color]()
 	private(set) var suggestedColor = Color.blue
 	private(set) var usedColors = [Color]()
-	private(set) var currentSeconds = 0
+	private(set) var currentSeconds = initialSeconds
 	private(set) var isGameRunning = false
 	
 	func updateColors(with color: Color, at index: Int) {
@@ -73,8 +75,8 @@ class MainViewModel {
 		}
 	}
 	
-	func incrementCurrentSeconds() {
-		currentSeconds += 1
+	func decrementCurrentSeconds() {
+		currentSeconds -= 1
 	}
 	
 	func isGameOver() -> Bool {
@@ -112,7 +114,7 @@ class MainViewModel {
 		
 		randomSuggestedColor()
 		isGameRunning = false
-		currentSeconds = 0
+		currentSeconds = MainViewModel.initialSeconds
 	}
 }
 

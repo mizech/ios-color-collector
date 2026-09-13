@@ -5,6 +5,7 @@ struct ContentView: View {
 	@Environment(MainViewModel.self) private var mainVM
 	@State private var isConfirmShown = false
 	@State private var isGameOverShown = false
+	@State private var messageText = "Congratulations. You have won!"
 	
 	let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 	
@@ -15,7 +16,7 @@ struct ContentView: View {
 	var body: some View {
 		NavigationStack {
 			Group {
-				if mainVM.isGameRunning == false && mainVM.currentSeconds == 0 {
+				if mainVM.isGameRunning == false && mainVM.currentSeconds == 125 {
 					ContentUnavailableView("Start a new game", systemImage: "gamecontroller")
 				} else {
 					VStack() {
@@ -90,11 +91,17 @@ struct ContentView: View {
 					mainVM.setInitialState()
 				}
 			} message: {
-				Text("Congratulations. You have won!")
+				Text(messageText)
 			}
 			.onReceive(timer) { _ in
 				if mainVM.isGameRunning == true {
-					mainVM.incrementCurrentSeconds()
+					mainVM.decrementCurrentSeconds()
+					
+					if mainVM.currentSeconds == 0 {
+						messageText = "You have run out of time and lost."
+						mainVM.toggleIsGameRunning()
+						isGameOverShown = true
+					}
 				}
 			}
 		}
